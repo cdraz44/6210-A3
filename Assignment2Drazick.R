@@ -106,20 +106,26 @@ summary(nchar(dfNOTCH3$NOTCH3_Sequence))
 
 ##coding for a histogram displaying the distribution of sequence lengths, to ensure quality control and identify any errors or outliers
 
-BRCA1PLOT<- ggplot(data = dfBRCA1,
-                   mapping = aes(x = nchar(BRCA1_Sequence)))  + 
-  geom_histogram(breaks= seq(5000,8000, by = 75), 
-                 col="blue", aes(fill=..count..)) + scale_fill_distiller(palette= "Spectral") + 
-  labs(title = "Frequency of Sequence Length of BRCA1 in Cetacea", x = "Sequence Length", y = "Number of Species")  + theme_bw()
+create_plot <- function(dfGene, gene_name, family_name, gene_min, gene_max) {
+  
+  plot_title <- paste0("Frequency of Sequence Length of ", gene_name, " in ", family_name)
+  
+  hist_plot <- ggplot(data = dfGene,
+                      mapping = aes(x = nchar(dfGene[,3]))) + 
+    geom_histogram(breaks= seq(gene_min,gene_max, by = 75), 
+                   col="blue", aes(fill=..count..)) + 
+    scale_fill_distiller(palette= "Spectral") + 
+    labs(title = plot_title, x = "Sequence Length", y = "Number of Species")  +
+    theme_bw()
+  
+  return(hist_plot)
+}
 
+NOTCH3PLOT <- create_plot(dfNOTCH3, gene1, family, gene1_min, gene1_max)
 
-NOTCH3PLOT<- ggplot(data = dfNOTCH3,
-                    mapping = aes(x = whales))  + 
-  geom_histogram(breaks= seq(6000,9000, by = 75), 
-                 col="red", aes(fill=..count..)) + scale_fill_distiller(palette = "Spectral")  +
-  labs(title = "Frequency of Sequence Length of NOTCH3 in Cetacea", x = "Sequence Length", y = "Frequency") + theme_bw() 
+BRCA1PLOT <- create_plot(dfBRCA1, gene2, family, gene2_min, gene2_max)
 
-##Plotting the pot to visualize
+##Plotting the plot to visualize
 
 plot(NOTCH3PLOT)
 
