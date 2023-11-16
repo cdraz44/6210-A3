@@ -17,24 +17,41 @@ gene2 = "BRCA1"
 gene2_min = 5000
 gene2_max = 8000
 
-# Function to search and fetch genes using the rentrez package, create global variables
-fetch_sequences <- function(family_name, gene, gene_min, gene_max) {
+# Function to search and fetch genes using the rentrez package, and create a dataframe containing gene sequences. Also creates global variables for quality control purposes.
+create_dfGene <- function(family_name, gene, gene_min, gene_max) {
   # Search NCBI nucleotide database for genes of a given length
   gene_search <- entrez_search(db = "nuccore", term = paste0(family_name,"[ORGN] AND ", gene, "[Gene] AND ", gene_min, ":", gene_max, "[SLEN]"), retmax = 1000)
   
   # Fetch fasta files corresponding to search parameters
   gene_fetch <- entrez_fetch(db = "nuccore", id = gene_search$ids, rettype = "fasta")
 
+  # write to file, separate and remove Ns from sequence data
+  write(gene_fetch, paste0(gene, "_fetch.fasta"), sep = "\n")
+  # Rewriting to a DNA string set from the .fasta file without any Ns in the sequences
+  gene_string <- readDNAStringSet(paste0(gene, "_fetch.fasta"))
   
-  #Create a entrez_fetch global variable for each gene for quality control purposes
+  # Creating a data frame from our stringset taking values(names) from stringset and plugging them into data frame
+  dfGene <- data.frame(title = names(gene_string), sequence = paste(gene_string))
+  
+  # Creating the column names for the dataframe
+  gene_title <- paste0(gene, "_Title")
+  gene_sequence <- paste0(gene, "_Sequence")
+  names(dfGene)[1:2] <- c(gene_title, gene_sequence)
+  
+  ## Creating global variables for each gene for quality control purposes
+  
+  # Entrez fetch variable
   assign(paste0(gene, "_fetch"), gene_fetch, parent.frame())
+  # Gene DNAStringSet Object using Biostrings package
+  assign(paste0(gene, "_string"), gene_string, parent.frame())
+  # Create Gene Data frame
+  assign(paste0("df", gene), dfGene, parent.frame())
 }
 
-# Fetch NOTCH3 fasta files
-fetch_sequences(family_name = family, gene = gene1,  gene_min = gene1_min, gene_max = gene1_max)
-# Fetch BRCA1 fasta files
-fetch_sequences(family_name = family, gene = gene2,  gene_min = gene2_min, gene_max = gene2_max)
-
+# Fetch NOTCH3 sequences and create data frame
+create_dfGene(family_name = family, gene = gene1,  gene_min = gene1_min, gene_max = gene1_max)
+# Fetch BRCA1 sequences and create data frame
+create_dfGene(family_name = family, gene = gene2,  gene_min = gene2_min, gene_max = gene2_max)
 
 ##Check class to ensure it is a character vector
 
@@ -48,32 +65,12 @@ head(BRCA1_fetch)
 
 head(NOTCH3_fetch)
 
-##write to file, separate and remove Ns from sequence data
-
-write(NOTCH3_fetch, "NOTCH3_fetch.fasta", sep = "\n")
-
-write(BRCA1_fetch, "BRCA1_fetch.fasta", sep = "\n")
-
-##Rewriting to a DNA string set from the .fasta file without any Ns in the sequences
-
-NOTCH3_string <- readDNAStringSet("NOTCH3_fetch.fasta")
-
-BRCA1_string <- readDNAStringSet("BRCA1_fetch.fasta")
-
 ##Checking data, ensuring we have proper class and viewing our data
 class(NOTCH3_string)
 head(names(NOTCH3_string))
 
 class(BRCA1_string)
 head(names(BRCA1_string))
-
-##Creating a data frame from our stringset taking values(names) from stringset and plugging them into data frame
-
-dfBRCA1 <- data.frame(BRCA1_Title = names(BRCA1string), 
-                      BRCA1_Sequence = paste(BRCA1string))
-
-dfNOTCH3 <- data.frame(NOTCH3_Title = names(NOTCH3_string),
-                       NOTCH3_Sequence = paste(NOTCH3_string))
 
 ##This is some name editing to clean up sequence names and remove unwanted words from species names
 
