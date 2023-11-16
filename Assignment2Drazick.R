@@ -131,33 +131,36 @@ plot(NOTCH3PLOT)
 
 plot(BRCA1PLOT)
 
-##Making sure that sequence IDs are dna string sets in order to run alignment
-dfBRCA1$BRCA1_Sequence2 <- DNAStringSet(dfBRCA1$BRCA1_Sequence)
 
-dfNOTCH3$NOTCH3_Sequence2 <- DNAStringSet(dfNOTCH3$NOTCH3_Sequence)
+run_alignment <- function(dfGene, gene) {
+  #Create new column name
+  colname <- paste0(gene, "_Sequence2")
+  #Add DNAStringSet sequences to new column
+  sequences <- dfGene[,3]
+  dfGene[[colname]] <- DNAStringSet(sequences)
+  #Assign species name to each sequence for alignment
+  names(dfGene[[colname]]) <- dfGene$Species_Name
+  #Align using MUSCLE
+  dfGene.alignment <- DNAStringSet(muscle::muscle(dfGene[[colname]]), use.names = TRUE)
+  # Update data frame global variable
+  assign(paste0("df", gene), dfGene, parent.frame())
+  # Return sequence alignment
+  return(dfGene.alignment)
+}
+
+##Making sure that sequence IDs are dna string sets in order to run alignment
+dfNOTCH3.alignment <- run_alignment(dfNOTCH3, gene1)
+dfBRCA1.alignment <- run_alignment(dfBRCA1, gene2)
 
 ##checking class -> string set
 class(dfNOTCH3$NOTCH3_Sequence2)
 
 class(dfBRCA1$BRCA1_Sequence2)
 
-##Ensuring species names are inputted so that they can carry forward through the analysis
-names(dfNOTCH3$NOTCH3_Sequence2) <- dfNOTCH3$Species_Name
-
-names(dfBRCA1$BRCA1_Sequence2) <- dfBRCA1$Species_Name
-
 ##Double checking that the names have transferred in and checking they are cleaned up
 names(dfNOTCH3$NOTCH3_Sequence2)
 
 names(dfBRCA1$BRCA1_Sequence2)
-
-##Performing sequence alignment
-
-dfBRCA1.alignment <- DNAStringSet(muscle::muscle(dfBRCA1$BRCA1_Sequence2), 
-                                  use.names = TRUE)
-
-dfNOTCH3.alignment <- DNAStringSet(muscle::muscle(dfNOTCH3$NOTCH3_Sequence2),
-                                   use.names = TRUE)
 
 ##Checking that alignment worked, with species names 
 
