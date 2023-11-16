@@ -178,7 +178,7 @@ BrowseSeqs(dfBRCA1.alignment)
 BrowseSeqs(dfNOTCH3.alignment)
 
 ##Changing alignment class to DNA bin to be used in a distance matrix for subsequent cluster analysis
-cluster_alignments <- function(dna_alignment, gene_name, missing_data, length_var, chosen_model, clustering_threshold, clustering_method) {
+cluster_alignments <- function(dna_alignment, gene_name, chosen_model, clustering_threshold, clustering_method) {
   #Changing alignment class to DNA bin
   dnaBin_gene <- as.DNAbin(dna_alignment)
   ##Creating distance matrices
@@ -202,30 +202,15 @@ cluster_alignments <- function(dna_alignment, gene_name, missing_data, length_va
   return(clusters_gene)
 }
 
-clusters.NOTCH3 <- cluster_alignments(dna_alignment = dfNOTCH3.alignment, gene_name = "NOTCH3", missing_data = 0, length_var = 0, chosen_model = "TN93", clustering_threshold = 0.03, clustering_method = "UPGMA")
+clusters.NOTCH3 <- cluster_alignments(dna_alignment = dfNOTCH3.alignment, gene_name = "NOTCH3", chosen_model = "TN93", clustering_threshold = 0.03, clustering_method = "UPGMA")
 
-clusters.BRCA1 <- cluster_alignments(dna_alignment = dfBRCA1.alignment, gene_name = "BRCA1", missing_data = 0, length_var = 0, chosen_model = "TN93", clustering_threshold = 0.03, clustering_method = "UPGMA")
-dnaBin.NOTCH3 <- as.DNAbin(dfNOTCH3.alignment)
-
-dnaBin.BRCA1 <- as.DNAbin(dfBRCA1.alignment)
+clusters.BRCA1 <- cluster_alignments(dna_alignment = dfBRCA1.alignment, gene_name = "BRCA1", chosen_model = "TN93", clustering_threshold = 0.03, clustering_method = "UPGMA")
 
 ##Checking that it worked and is now DNA bin class
 
 class(dnaBin.NOTCH3)
 
 class(dnaBin.BRCA1)
-
-##Setting values for cluster analysis
-
-missing.data <- 0.01
-
-length.var <- 10
-
-chosen.model <- "TN93"
-
-clustering.threshold <- 0.03
-
-clustering.method <- "UPGMA"
 
 ##Ensuring that it worked 
 
