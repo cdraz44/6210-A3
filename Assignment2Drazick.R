@@ -7,17 +7,33 @@ library(muscle)
 library(DECIPHER)
 library(rentrez)
 
-##searching NCBI Genbank nucleotide database for gene sequences for family Cetacea ensuring we are only finding sequences of the actual genes and not entire genomes
 
-NOTCH3_search <- entrez_search(db = "nuccore", term = "(Cetacea[ORGN] AND NOTCH3[Gene] AND 6000:9000[SLEN])", retmax = 1000)
+# Listing global variables to be searched in NCBI Genback nucleotide database. In this case, NOTCH3 and BRCA1 genes from the Cetacea family were searched against a certain length range to isolate gene sequences rather than genomes.
+family = "Cetacea"
+gene1 = "NOTCH3"
+gene1_min = 6000
+gene1_max = 9000
+gene2 = "BRCA1"
+gene2_min = 5000
+gene2_max = 8000
 
-BRCA1_search <- entrez_search(db = "nuccore", term = "(Cetacea[ORGN] AND BRCA1[Gene] AND 5000:8000[SLEN])", retmax = 1000)
+# Function to search and fetch genes using the rentrez package, create global variables
+fetch_sequences <- function(family_name, gene, gene_min, gene_max) {
+  # Search NCBI nucleotide database for genes of a given length
+  gene_search <- entrez_search(db = "nuccore", term = paste0(family_name,"[ORGN] AND ", gene, "[Gene] AND ", gene_min, ":", gene_max, "[SLEN]"), retmax = 1000)
+  
+  # Fetch fasta files corresponding to search parameters
+  gene_fetch <- entrez_fetch(db = "nuccore", id = gene_search$ids, rettype = "fasta")
 
-##Fetching data for each gene of interest from NCBI genbank nucleotide database, retrieving data in .fasta format
+  #Create a entrez_fetch global variable for each gene for quality control purposes
+  assign(paste0(gene, "_fetch"), gene_fetch, parent.frame())
+}
 
-NOTCH3_fetch <- entrez_fetch(db = "nuccore", id = NOTCH3_search$ids, rettype = "fasta")
+# Fetch NOTCH3 fasta files
+fetch_sequences(family_name = family, gene = gene1,  gene_min = gene1_min, gene_max = gene1_max)
+# Fetch BRCA1 fasta files
+fetch_sequences(family_name = family, gene = gene2,  gene_min = gene2_min, gene_max = gene2_max)
 
-BRCA1_fetch <- entrez_fetch(db = "nuccore", id = BRCA1_search$ids, rettype = "fasta")
 
 ##Check class to ensure it is a character vector
 
