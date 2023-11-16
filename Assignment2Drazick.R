@@ -9,6 +9,9 @@ library(rentrez)
 library(Biostrings)
 library(ggplot2)
 library(ggtext)
+library(cluster)
+library(factoextra)
+library(viridis)
 
 # Listing global variables to be searched in NCBI Genback nucleotide database. In this case, NOTCH3 and BRCA1 genes from the Cetacea family were searched against a certain length range to isolate gene sequences rather than genomes.
 family = "Cetacea"
@@ -260,11 +263,6 @@ clusters.NOTCH3
 
 length(clusters.NOTCH3)
 
-##Installing package for creating kmeans analysis and cluster plots 
-
-install.packages("cluster")
-library(cluster)
-
 ##numbering species names making each a unique name to use as a unique data point on our plot
 rownames(distanceMatrixNOTCH3) = make.names(rownames(distanceMatrixNOTCH3), unique = TRUE)
 
@@ -284,12 +282,6 @@ kmBRCA1 <- kmeans(distanceMatrixBRCA, 6)
 kmNOTCH3
 
 kmBRCA1
-
-##Installing package for kmeans cluster plotting as well as silhouette index plotting
-
-install.packages("factoextra")
-library(factoextra)
-library(viridis)
 
 ##Creating kmeans cluster plot in ggplot style, colouring and tweaking default parameters to match the goal of these plots
 
