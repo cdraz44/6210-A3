@@ -318,11 +318,14 @@ plot(OptNOTCH3)
 
 plot(OptBRCA1)
 
-##Changing the number of K-mean clusters
+##Changing the number of K-mean clusters by obtaining the max number of clusters from the fviz_nbclust function
+maxNOTCH3 <- OptNOTCH3$data
+max_cluster_NOTCH3 <- as.numeric(maxNOTCH3$clusters[which.max(maxNOTCH3$y)])
+kmNOTCH3 <- kmeans(distanceMatrixNOTCH3, max_cluster_NOTCH3)
 
-kmNOTCH3 <- kmeans(distanceMatrixNOTCH3,5)
-
-kmBRCA1 <- kmeans(distanceMatrixBRCA, 4)
+maxBRCA1 <- OptBRCA1$data
+max_cluster_BRCA1 <- as.numeric(maxBRCA1$clusters[which.max(maxBRCA1$y)])
+kmBRCA1 <- kmeans(distanceMatrixBRCA, max_cluster_BRCA1)
 
 ##Re-making the graphs using this new parameter
 
