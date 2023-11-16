@@ -329,13 +329,9 @@ kmBRCA1 <- kmeans(distanceMatrixBRCA, max_cluster_BRCA1)
 
 ##Re-making the graphs using this new parameter
 
-NOTCH3_cluster <- fviz_cluster(kmNOTCH3, data = distanceMatrixNOTCH3, geom = c("point","text"), 
-                               repel = TRUE, show.clust.cent = TRUE, ellipse.type = "convex", labelsize = 5) + 
-  labs(title= "K-means Analysis of NOTCH3") + theme(panel.background = element_rect(fill = "darkgrey")) + scale_color_viridis_d(option = "H")
+NOTCH3_cluster <- kmeans_cluster(kmNOTCH3, distanceMatrixNOTCH3, gene1, 5, "H")
 
-BRCA1_cluster <- fviz_cluster(kmBRCA1, data = distanceMatrixBRCA, geom = c("point","text"), 
-                              repel = TRUE, ellipse.type = "convex", labelsize = 8) + 
-  labs(title= "K-means Analysis of BRCA1") + theme(panel.background = element_rect(fill = "darkgrey"))   + scale_color_viridis_d(option = "A") 
+BRCA1_cluster <- kmeans_cluster(kmBRCA1, distanceMatrixBRCA, gene2, 8, "A")
 
 ##Plotting and viewing new plot with updated kmeans parameter
 
