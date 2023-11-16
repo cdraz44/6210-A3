@@ -131,7 +131,7 @@ plot(NOTCH3PLOT)
 
 plot(BRCA1PLOT)
 
-
+# Alignment Function
 run_alignment <- function(dfGene, gene) {
   #Create new column name
   colname <- paste0(gene, "_Sequence2")
@@ -148,7 +148,7 @@ run_alignment <- function(dfGene, gene) {
   return(dfGene.alignment)
 }
 
-##Making sure that sequence IDs are dna string sets in order to run alignment
+##Create alignments for NOTCH3 and BRCA1
 dfNOTCH3.alignment <- run_alignment(dfNOTCH3, gene1)
 dfBRCA1.alignment <- run_alignment(dfBRCA1, gene2)
 
@@ -186,6 +186,18 @@ class(dnaBin.NOTCH3)
 
 class(dnaBin.BRCA1)
 
+##Setting values for cluster analysis
+
+missing.data <- 0.01
+
+length.var <- 10
+
+chosen.model <- "TN93"
+
+clustering.threshold <- 0.03
+
+clustering.method <- "UPGMA"
+
 ##Creating distance matrixes
 
 distanceMatrixBRCA <- dist.dna(dnaBin.BRCA1, 
@@ -204,27 +216,29 @@ head(distanceMatrixBRCA)
 
 head(distanceMatrixNOTCH3)
 
-##Setting values for cluster analysis
-
-missing.data <- 0.01
-
-length.var <- 10
-
-chosen.model <- "TN93"
-
-clustering.threshold <- 0.03
-
-clustering.method <- "UPGMA"
 
 ##!!please note using IdClusters here instead of TreeLine!! -Clustering my data using previously chosen cluster values
-clusters.NOTCH3 <- DECIPHER::IdClusters(myDistMatrix = distanceMatrixNOTCH3, 
+# clusters.NOTCH3 <- DECIPHER::IdClusters(myDistMatrix = distanceMatrixNOTCH3, 
+#                                         method = clustering.method,
+#                                         cutoff = clustering.threshold,
+#                                         showPlot = TRUE,
+#                                         type = "both",
+#                                         verbose= TRUE)
+# 
+# clusters.BRCA1 <- DECIPHER::IdClusters(myDistMatrix = distanceMatrixBRCA,
+#                                        method = clustering.method,
+#                                        cutoff = clustering.threshold,
+#                                        type = "both",
+#                                        showPlot = TRUE,
+#                                        verbose = TRUE)
+clusters.NOTCH3 <- DECIPHER::TreeLine(myDistMatrix = distanceMatrixNOTCH3, 
                                         method = clustering.method,
                                         cutoff = clustering.threshold,
                                         showPlot = TRUE,
                                         type = "both",
                                         verbose= TRUE)
 
-clusters.BRCA1 <- DECIPHER::IdClusters(myDistMatrix = distanceMatrixBRCA,
+clusters.BRCA1 <- DECIPHER::TreeLine(myDistMatrix = distanceMatrixBRCA,
                                        method = clustering.method,
                                        cutoff = clustering.threshold,
                                        type = "both",
