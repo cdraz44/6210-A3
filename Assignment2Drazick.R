@@ -7,6 +7,8 @@ library(muscle)
 library(DECIPHER)
 library(rentrez)
 library(Biostrings)
+library(ggplot2)
+library(ggtext)
 
 # Listing global variables to be searched in NCBI Genback nucleotide database. In this case, NOTCH3 and BRCA1 genes from the Cetacea family were searched against a certain length range to isolate gene sequences rather than genomes.
 family = "Cetacea"
@@ -98,12 +100,6 @@ names(dfNOTCH3)
 summary(nchar(dfBRCA1$BRCA1_Sequence))
 
 summary(nchar(dfNOTCH3$NOTCH3_Sequence))
-
-##loading packages for plotting
-
-library(ggplot2)
-
-library(ggtext)
 
 ##coding for a histogram displaying the distribution of sequence lengths, to ensure quality control and identify any errors or outliers
 
