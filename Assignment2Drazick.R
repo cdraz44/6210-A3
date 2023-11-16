@@ -178,7 +178,33 @@ BrowseSeqs(dfBRCA1.alignment)
 BrowseSeqs(dfNOTCH3.alignment)
 
 ##Changing alignment class to DNA bin to be used in a distance matrix for subsequent cluster analysis
+cluster_alignments <- function(dna_alignment, gene_name, missing_data, length_var, chosen_model, clustering_threshold, clustering_method) {
+  #Changing alignment class to DNA bin
+  dnaBin_gene <- as.DNAbin(dna_alignment)
+  ##Creating distance matrices
+  distanceMatrixgene <- dist.dna(dnaBin_gene, 
+                                 model = chosen_model, 
+                                 as.matrix = TRUE, 
+                                 pairwise.deletion = TRUE)
+  # -Clustering my data using previously chosen cluster values
+  clusters_gene <- DECIPHER::TreeLine(myDistMatrix = distanceMatrixgene, 
+                                        method = clustering_method,
+                                        cutoff = clustering_threshold,
+                                        showPlot = TRUE,
+                                        type = "both",
+                                        verbose= TRUE)
+  ##numbering species names making each a unique name to use as a unique data point on our plot
+  rownames(distanceMatrixgene) = make.names(rownames(distanceMatrixgene), unique = TRUE)
+  # Outputting bin class and distance matrix global variables
+  assign(paste0("dnaBin.", gene_name), dnaBin_gene, parent.frame())
+  assign(paste0("distanceMatrix", gene_name), distanceMatrixgene, parent.frame())
+  # Return a cluster grouped by distance matrix similarity
+  return(clusters_gene)
+}
 
+clusters.NOTCH3 <- cluster_alignments(dna_alignment = dfNOTCH3.alignment, gene_name = "NOTCH3", missing_data = 0, length_var = 0, chosen_model = "TN93", clustering_threshold = 0.03, clustering_method = "UPGMA")
+
+clusters.BRCA1 <- cluster_alignments(dna_alignment = dfBRCA1.alignment, gene_name = "BRCA1", missing_data = 0, length_var = 0, chosen_model = "TN93", clustering_threshold = 0.03, clustering_method = "UPGMA")
 dnaBin.NOTCH3 <- as.DNAbin(dfNOTCH3.alignment)
 
 dnaBin.BRCA1 <- as.DNAbin(dfBRCA1.alignment)
@@ -201,39 +227,11 @@ clustering.threshold <- 0.03
 
 clustering.method <- "UPGMA"
 
-##Creating distance matrixes
-
-distanceMatrixBRCA <- dist.dna(dnaBin.BRCA1, 
-                               model = chosen.model, 
-                               as.matrix = TRUE, 
-                               pairwise.deletion = TRUE)
-
-distanceMatrixNOTCH3 <- dist.dna(dnaBin.NOTCH3, 
-                                 model = chosen.model, 
-                                 as.matrix = TRUE, 
-                                 pairwise.deletion = TRUE)
-
 ##Ensuring that it worked 
 
 head(distanceMatrixBRCA)
 
 head(distanceMatrixNOTCH3)
-
-
-# -Clustering my data using previously chosen cluster values
-clusters.NOTCH3 <- DECIPHER::TreeLine(myDistMatrix = distanceMatrixNOTCH3, 
-                                        method = clustering.method,
-                                        cutoff = clustering.threshold,
-                                        showPlot = TRUE,
-                                        type = "both",
-                                        verbose= TRUE)
-
-clusters.BRCA1 <- DECIPHER::TreeLine(myDistMatrix = distanceMatrixBRCA,
-                                       method = clustering.method,
-                                       cutoff = clustering.threshold,
-                                       type = "both",
-                                       showPlot = TRUE,
-                                       verbose = TRUE)
 
 ##Checking class, viewing and checking length of clusters for quality control
 
@@ -249,11 +247,6 @@ class(clusters.NOTCH3)
 clusters.NOTCH3
 
 length(clusters.NOTCH3)
-
-##numbering species names making each a unique name to use as a unique data point on our plot
-rownames(distanceMatrixNOTCH3) = make.names(rownames(distanceMatrixNOTCH3), unique = TRUE)
-
-rownames(distanceMatrixBRCA) = make.names(rownames(distanceMatrixBRCA), unique = TRUE)
 
 ##Setting the seed for reproduction
 set.seed(123)
