@@ -6,7 +6,7 @@ library(ape)
 library(muscle)
 library(DECIPHER)
 library(rentrez)
-
+library(Biostrings)
 
 # Listing global variables to be searched in NCBI Genback nucleotide database. In this case, NOTCH3 and BRCA1 genes from the Cetacea family were searched against a certain length range to isolate gene sequences rather than genomes.
 family = "Cetacea"
@@ -25,6 +25,7 @@ fetch_sequences <- function(family_name, gene, gene_min, gene_max) {
   # Fetch fasta files corresponding to search parameters
   gene_fetch <- entrez_fetch(db = "nuccore", id = gene_search$ids, rettype = "fasta")
 
+  
   #Create a entrez_fetch global variable for each gene for quality control purposes
   assign(paste0(gene, "_fetch"), gene_fetch, parent.frame())
 }
