@@ -214,7 +214,7 @@ class(dnaBin.BRCA1)
 
 ##Ensuring that it worked 
 
-head(distanceMatrixBRCA)
+head(distanceMatrixBRCA1)
 
 head(distanceMatrixNOTCH3)
 
@@ -240,7 +240,7 @@ set.seed(123)
 
 kmNOTCH3 <- kmeans(distanceMatrixNOTCH3,3)
 
-kmBRCA1 <- kmeans(distanceMatrixBRCA, 6)
+kmBRCA1 <- kmeans(distanceMatrixBRCA1, 6)
 
 ##Viewing kmeans outcomes and evaluating whether this is the right number of clusters
 
@@ -266,7 +266,7 @@ kmeans_cluster <- function(kmGene, distanceMatrix, gene_name, labelsize = 5, vir
 
 NOTCH3_cluster <- kmeans_cluster(kmNOTCH3, distanceMatrixNOTCH3, gene1, 5, "H")
 
-BRCA1_cluster <- kmeans_cluster(kmBRCA1, distanceMatrixBRCA, gene2, 8, "A")
+BRCA1_cluster <- kmeans_cluster(kmBRCA1, distanceMatrixBRCA1, gene2, 8, "A")
 
 ##Plotting and viewing of plots
 plot(BRCA1_cluster)
@@ -276,7 +276,7 @@ plot(NOTCH3_cluster)
 ##To ensure we have the right amount of clusters for our k-means analysis, I am creating a plot to tell us the optimal number of clusters for each using silhouette index calculations
 OptNOTCH3 <- fviz_nbclust(distanceMatrixNOTCH3, FUNcluster = kmeans, method = "silhouette", linecolor = "lightpink2")
 
-OptBRCA1 <- fviz_nbclust(distanceMatrixBRCA, FUNcluster = kmeans, method = "silhouette", linecolor = "lightblue2")
+OptBRCA1 <- fviz_nbclust(distanceMatrixBRCA1, FUNcluster = kmeans, method = "silhouette", linecolor = "lightblue2")
 
 ##Plotting optimal cluster plot
 plot(OptNOTCH3)
@@ -290,13 +290,13 @@ kmNOTCH3 <- kmeans(distanceMatrixNOTCH3, max_cluster_NOTCH3)
 
 maxBRCA1 <- OptBRCA1$data
 max_cluster_BRCA1 <- as.numeric(maxBRCA1$clusters[which.max(maxBRCA1$y)])
-kmBRCA1 <- kmeans(distanceMatrixBRCA, max_cluster_BRCA1)
+kmBRCA1 <- kmeans(distanceMatrixBRCA1, max_cluster_BRCA1)
 
 ##Re-making the graphs using this new parameter
 
 NOTCH3_cluster <- kmeans_cluster(kmNOTCH3, distanceMatrixNOTCH3, gene1, 5, "H")
 
-BRCA1_cluster <- kmeans_cluster(kmBRCA1, distanceMatrixBRCA, gene2, 8, "A")
+BRCA1_cluster <- kmeans_cluster(kmBRCA1, distanceMatrixBRCA1, gene2, 8, "A")
 
 ##Plotting and viewing new plot with updated kmeans parameter
 
