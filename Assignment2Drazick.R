@@ -15,12 +15,10 @@ library(viridis)
 
 # Listing global variables to be searched in NCBI Genback nucleotide database. In this case, NOTCH3 and BRCA1 genes from the Cetacea family were searched against a certain length range to isolate gene sequences rather than genomes.
 family = "Cetacea"
-gene1 = "NOTCH3"
-gene1_min = 6000
-gene1_max = 9000
-gene2 = "BRCA1"
-gene2_min = 5000
-gene2_max = 8000
+NOTCH3_min = 6000
+NOTCH3_max = 9000
+BRCA1_min = 5000
+BRCA1_max = 8000
 
 # Function to search and fetch genes using the rentrez package, and create a dataframe containing gene sequences. Also creates global variables for quality control purposes.
 create_dfGene <- function(family_name, gene, gene_min, gene_max) {
@@ -54,9 +52,9 @@ create_dfGene <- function(family_name, gene, gene_min, gene_max) {
 }
 
 # Fetch NOTCH3 sequences and create data frame
-create_dfGene(family_name = family, gene = gene1,  gene_min = gene1_min, gene_max = gene1_max)
+create_dfGene(family_name = family, gene = "NOTCH3",  gene_min = NOTCH3_min, gene_max = NOTCH3_max)
 # Fetch BRCA1 sequences and create data frame
-create_dfGene(family_name = family, gene = gene2,  gene_min = gene2_min, gene_max = gene2_max)
+create_dfGene(family_name = family, gene = "BRCA1",  gene_min = BRCA1_min, gene_max = BRCA1_max)
 
 ##Check class to ensure it is a character vector
 
@@ -87,8 +85,8 @@ clean_df <- function(dfGene, gene_name) {
   
 }
 
-dfNOTCH3 <- clean_df(dfNOTCH3, gene1)
-dfBRCA1 <- clean_df(dfBRCA1, gene2)
+dfNOTCH3 <- clean_df(dfNOTCH3, "NOTCH3")
+dfBRCA1 <- clean_df(dfBRCA1, "BRCA1")
 
 ##Checking dimensions of the dataframe as quality control
 
@@ -124,9 +122,9 @@ create_plot <- function(dfGene, gene_name, family_name, gene_min, gene_max) {
   return(hist_plot)
 }
 
-NOTCH3PLOT <- create_plot(dfNOTCH3, gene1, family, gene1_min, gene1_max)
+NOTCH3PLOT <- create_plot(dfNOTCH3, "NOTCH3", family, NOTCH3_min, NOTCH3_max)
 
-BRCA1PLOT <- create_plot(dfBRCA1, gene2, family, gene2_min, gene2_max)
+BRCA1PLOT <- create_plot(dfBRCA1, "BRCA1", family, BRCA1_min, BRCA1_max)
 
 ##Plotting the plot to visualize
 
@@ -152,8 +150,8 @@ run_alignment <- function(dfGene, gene) {
 }
 
 ##Create alignments for NOTCH3 and BRCA1
-dfNOTCH3.alignment <- run_alignment(dfNOTCH3, gene1)
-dfBRCA1.alignment <- run_alignment(dfBRCA1, gene2)
+dfNOTCH3.alignment <- run_alignment(dfNOTCH3, "NOTCH3")
+dfBRCA1.alignment <- run_alignment(dfBRCA1, "BRCA1")
 
 ##checking class -> string set
 class(dfNOTCH3$NOTCH3_Sequence2)
@@ -280,9 +278,9 @@ kmeans_cluster <- function(kmGene, distanceMatrix, gene_name, labelsize = 5, vir
   return(gene_cluster)
 }
 
-NOTCH3_cluster <- kmeans_cluster(kmNOTCH3, distanceMatrixNOTCH3, gene1, 5, "H")
+NOTCH3_cluster <- kmeans_cluster(kmNOTCH3, distanceMatrixNOTCH3, "NOTCH3", 5, "H")
 
-BRCA1_cluster <- kmeans_cluster(kmBRCA1, distanceMatrixBRCA1, gene2, 8, "A")
+BRCA1_cluster <- kmeans_cluster(kmBRCA1, distanceMatrixBRCA1, "BRCA1", 8, "A")
 
 ##Plotting and viewing of plots
 plot(BRCA1_cluster)
