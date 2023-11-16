@@ -284,14 +284,24 @@ kmNOTCH3
 kmBRCA1
 
 ##Creating kmeans cluster plot in ggplot style, colouring and tweaking default parameters to match the goal of these plots
+kmeans_cluster <- function(kmGene, distanceMatrix, gene_name, labelsize = 5, viridis_option = "H") {
+  figure_title <- paste("K-means Analysis of", gene_name)
+  gene_cluster <- fviz_cluster(kmGene,
+                               data = distanceMatrix, 
+                               geom = c("point","text"), 
+                               repel = TRUE, 
+                               show.clust.cent = TRUE, 
+                               ellipse.type = "convex", 
+                               labelsize = 5) +
+    labs(title= figure_title) + 
+    theme(panel.background = element_rect(fill = "darkgrey")) + 
+    scale_color_viridis_d(option = viridis_option)
+  return(gene_cluster)
+}
 
-NOTCH3_cluster <- fviz_cluster(kmNOTCH3, data = distanceMatrixNOTCH3, geom = c("point","text"), 
-                               repel = TRUE, show.clust.cent = TRUE, ellipse.type = "convex", labelsize = 5) + 
-  labs(title= "K-means Analysis of NOTCH3") + theme(panel.background = element_rect(fill = "darkgrey")) + scale_color_viridis_d(option = "H")
+NOTCH3_cluster <- kmeans_cluster(kmNOTCH3, distanceMatrixNOTCH3, gene1, 5, "H")
 
-BRCA1_cluster <- fviz_cluster(kmBRCA1, data = distanceMatrixBRCA, geom = c("point","text"), 
-                              repel = TRUE, ellipse.type = "convex", labelsize = 8) + 
-  labs(title= "K-means Analysis of BRCA1") + theme(panel.background = element_rect(fill = "darkgrey"))   + scale_color_viridis_d(option = "A") 
+BRCA1_cluster <- kmeans_cluster(kmBRCA1, distanceMatrixBRCA, gene2, 8, "A")
 
 ##Plotting and viewing of plots
 plot(BRCA1_cluster)
