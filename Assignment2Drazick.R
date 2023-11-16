@@ -74,15 +74,18 @@ head(names(NOTCH3_string))
 class(BRCA1_string)
 head(names(BRCA1_string))
 
-##This is some name editing to clean up sequence names and remove unwanted words from species names
+##This is some name editing to clean up sequence names and remove unwanted words from species names, and rearranging data frame columns
 
-dfBRCA1$Species_Name <- word(dfBRCA1$BRCA1_Title, 3L, 4L)
-dfNOTCH3$Species_Name <- word(dfNOTCH3$NOTCH3_Title, 3L, 4L)
+clean_df <- function(dfGene, gene_name) {
+  
+  dfGene$Species_Name <- word(dfGene[,1], 3L, 4L)
+  colnames <- c(paste0(gene_name, "_Title"), "Species_Name", paste0(gene_name, "_Sequence"))
+  return(dfGene[, colnames])
+  
+}
 
-##Rearranging data frame columns
-
-dfBRCA1 <- dfBRCA1[, c("BRCA1_Title", "Species_Name", "BRCA1_Sequence")]
-dfNOTCH3 <- dfNOTCH3[, c("NOTCH3_Title", "Species_Name", "NOTCH3_Sequence")]
+dfNOTCH3 <- clean_df(dfNOTCH3, gene1)
+dfBRCA1 <- clean_df(dfBRCA1, gene2)
 
 ##Checking dimensions of the dataframe as quality control
 
