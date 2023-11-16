@@ -220,20 +220,7 @@ head(distanceMatrixBRCA)
 head(distanceMatrixNOTCH3)
 
 
-##!!please note using IdClusters here instead of TreeLine!! -Clustering my data using previously chosen cluster values
-# clusters.NOTCH3 <- DECIPHER::IdClusters(myDistMatrix = distanceMatrixNOTCH3, 
-#                                         method = clustering.method,
-#                                         cutoff = clustering.threshold,
-#                                         showPlot = TRUE,
-#                                         type = "both",
-#                                         verbose= TRUE)
-# 
-# clusters.BRCA1 <- DECIPHER::IdClusters(myDistMatrix = distanceMatrixBRCA,
-#                                        method = clustering.method,
-#                                        cutoff = clustering.threshold,
-#                                        type = "both",
-#                                        showPlot = TRUE,
-#                                        verbose = TRUE)
+# -Clustering my data using previously chosen cluster values
 clusters.NOTCH3 <- DECIPHER::TreeLine(myDistMatrix = distanceMatrixNOTCH3, 
                                         method = clustering.method,
                                         cutoff = clustering.threshold,
