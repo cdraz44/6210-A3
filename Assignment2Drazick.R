@@ -51,27 +51,32 @@ create_dfGene <- function(family_name, gene, gene_min, gene_max) {
   gene_fetch <- entrez_fetch(db = "nuccore",
                              id = gene_search$ids,
                              rettype = "fasta")
-  
+
+
   # write to file, separate and remove Ns from sequence data
   write(gene_fetch, paste0(gene, "_fetch.fasta"), sep = "\n")
-  
+
+
   # Rewriting to a DNA string set from the .fasta file
   # without any Ns in the sequences
   fasta_name <- paste0(gene, "_fetch.fasta")
   gene_string <- readDNAStringSet(fasta_name)
-  
+
+
   # Creating a data frame from our stringset taking values(names)
   # from stringset and plugging them into data frame
   dfGene <- data.frame(title = names(gene_string),
                        sequence = paste(gene_string))
-  
+
+
   # Creating the column names for the dataframe
   gene_title <- paste0(gene, "_Title")
   gene_sequence <- paste0(gene, "_Sequence")
   names(dfGene)[1:2] <- c(gene_title, gene_sequence)
-  
+
+
   ## Creating global variables for each gene for quality control purposes
-  
+
   # Entrez fetch variable
   assign(paste0(gene, "_fetch"), gene_fetch, parent.frame())
   # Gene DNAStringSet Object using Biostrings package
@@ -111,13 +116,14 @@ head(names(BRCA1_string))
 # and rearranging data frame columns
 
 clean_df <- function(dfGene, gene_name) {
-  
+
+
   dfGene$Species_Name <- word(dfGene[, 1], 3L, 4L)
   colnames <- c(paste0(gene_name, "_Title"),
                 "Species_Name",
                 paste0(gene_name, "_Sequence"))
   return(dfGene[, colnames])
-  
+
 }
 
 dfNOTCH3 <- clean_df(dfNOTCH3, "NOTCH3")
@@ -144,10 +150,10 @@ summary(nchar(dfNOTCH3$NOTCH3_Sequence))
 # to ensure quality control and identify any errors or outliers
 
 create_plot <- function(dfGene, gene_name, family_name, gene_min, gene_max) {
-  
+
   plot_title <- paste0("Frequency of Sequence Length of ",
                        gene_name, " in ", family_name)
-  
+
   hist_plot <- ggplot(data = dfGene,
                       mapping = aes(x = nchar(dfGene[, 3]))) +
     geom_histogram(breaks = seq(gene_min, gene_max, by = 75),
@@ -155,7 +161,7 @@ create_plot <- function(dfGene, gene_name, family_name, gene_min, gene_max) {
     scale_fill_distiller(palette = "Spectral") +
     labs(title = plot_title, x = "Sequence Length", y = "Number of Species")  +
     theme_bw()
-  
+
   return(hist_plot)
 }
 
