@@ -1,3 +1,15 @@
+
+############## ATTRIBUTIONS ###############
+# Code written by: Cassandra Drazick
+# Contributor: Edicon Chan
+# added: functions, improved functionality of fviz_cluster using functions, fixed error in incomplete base call removal
+
+#Code and GitHub reviewers:
+# Edicon Chan, Nathaniel Lesperance, Cynthia Du
+
+### Unsupervised Machine Learning ###
+
+
 ##load packages to be used in this analysis
 
 library(tidyverse)
@@ -40,23 +52,28 @@ create_dfGene <- function(family_name, gene, gene_min, gene_max) {
                              id = gene_search$ids,
                              rettype = "fasta")
 
+
   # write to file, separate and remove Ns from sequence data
   write(gene_fetch, paste0(gene, "_fetch.fasta"), sep = "\n")
+
 
   # Rewriting to a DNA string set from the .fasta file
   # without any Ns in the sequences
   fasta_name <- paste0(gene, "_fetch.fasta")
   gene_string <- readDNAStringSet(fasta_name)
 
+
   # Creating a data frame from our stringset taking values(names)
   # from stringset and plugging them into data frame
   dfGene <- data.frame(title = names(gene_string),
                        sequence = paste(gene_string))
 
+
   # Creating the column names for the dataframe
   gene_title <- paste0(gene, "_Title")
   gene_sequence <- paste0(gene, "_Sequence")
   names(dfGene)[1:2] <- c(gene_title, gene_sequence)
+
 
   ## Creating global variables for each gene for quality control purposes
 
@@ -99,6 +116,7 @@ head(names(BRCA1_string))
 # and rearranging data frame columns
 
 clean_df <- function(dfGene, gene_name) {
+
 
   dfGene$Species_Name <- word(dfGene[, 1], 3L, 4L)
   colnames <- c(paste0(gene_name, "_Title"),
